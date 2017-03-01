@@ -136,17 +136,26 @@ class CustomPlayer:
             # automatically catch the exception raised by the search method
             # when the timer gets close to expiring
 
-            if not legal_moves:
-                return (-1, -1)
+            move = (-1, -1)
+            max_depth = 10
 
-            if self.method == "minimax":
-                #_, move = max([(self.minimax(game.forecast_move(m), self.search_depth, False), m) for m in legal_moves])
-                _, move = self.minimax(game, self.search_depth, False)
-            elif self.method == "alphabeta":
-                _, move = self.alphabeta(game, self.search_depth)
+            if not legal_moves:
+                return move
+
+            def get_simple_move(depth):
+                if self.method == "minimax":
+                    #_, move = max([(self.minimax(game.forecast_move(m), depth, False), m) for m in legal_moves])
+                    _, move = self.minimax(game, depth, False)
+                elif self.method == "alphabeta":
+                    _, move = self.alphabeta(game, depth)
+
+                return move
 
             if self.iterative:
-                pass
+                for d in range(1, max_depth):
+                    move = get_simple_move(d)
+            else:
+                move = get_simple_move(self.search_depth)
 
         except Timeout:
             # Handle any actions required at timeout, if necessary
