@@ -139,7 +139,9 @@ class CustomPlayer:
             if not legal_moves:
                 return (-1, -1)
 
-            _, move = max([(self.minimax(game.forecast_move(m), self.search_depth, False), m) for m in legal_moves])
+            #_, move = max([(self.minimax(game.forecast_move(m), self.search_depth, False), m) for m in legal_moves])
+            #_, move = self.minimax(game, self.search_depth, False)
+            _, move = self.alphabeta(game, self.search_depth)
 
         except Timeout:
             # Handle any actions required at timeout, if necessary
@@ -186,19 +188,16 @@ class CustomPlayer:
         legal_moves = game.get_legal_moves(player)
         move = (-1, -1)
 
-        #print("minimax start ---", depth, maximizing_player)
         if maximizing_player:
             value = float("-inf")
         else:
             value = float("inf")
 
         if not legal_moves:
-            #print("not legal", value, move)
             return [value, move]
 
         if depth <= 0:
             new_value = self.score(game, self)
-            #print("depth zero", new_value)
             return [new_value, (-1, -1)]
 
         new_depth = depth-1
@@ -206,14 +205,11 @@ class CustomPlayer:
 
         for m in legal_moves:
             new_value, _ = self.minimax(game.forecast_move(m), new_depth, new_maximizing_player)
-            #print(" ---- legal move", m, new_value)
 
             if (maximizing_player and new_value > value) or ((not maximizing_player) and new_value < value):
-                #print(" ---- change", m, new_value)
                 value = new_value
                 move = m
 
-        #print(" ----  --- return ", value, move)
         return (value, move)
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf"), maximizing_player=True):
@@ -257,5 +253,41 @@ class CustomPlayer:
         if self.time_left() < self.TIMER_THRESHOLD:
             raise Timeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        player = game.active_player
+        legal_moves = game.get_legal_moves(player)
+        move = (-1, -1)
+
+        if maximizing_player:
+            value = float("-inf")
+        else:
+            value = float("inf")
+
+        if not legal_moves:
+            return [value, move]
+
+        if depth <= 0:
+            new_value = self.score(game, self)
+            return [new_value, (-1, -1)]
+
+        new_depth = depth-1
+        new_maximizing_player = not maximizing_player
+
+        for m in legal_moves:
+            new_value, _ = self.alphabeta(game.forecast_move(m), new_depth, alpha, beta, new_maximizing_player)
+
+            if maximizing_player:
+                if new_value > value:
+                    value = new_value
+                    move = m
+                if value >= beta:
+                    return (value, move)
+                alpha = max(alpha, value)
+            else:
+                if new_value < value:
+                    value = new_value
+                    move = m
+                if value <= alpha:
+                    return (value, move)
+                beta = min(beta, value)
+
+        return (value, move)
