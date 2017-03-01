@@ -139,9 +139,14 @@ class CustomPlayer:
             if not legal_moves:
                 return (-1, -1)
 
-            #_, move = max([(self.minimax(game.forecast_move(m), self.search_depth, False), m) for m in legal_moves])
-            #_, move = self.minimax(game, self.search_depth, False)
-            _, move = self.alphabeta(game, self.search_depth)
+            if self.method == "minimax":
+                #_, move = max([(self.minimax(game.forecast_move(m), self.search_depth, False), m) for m in legal_moves])
+                _, move = self.minimax(game, self.search_depth, False)
+            elif self.method == "alphabeta":
+                _, move = self.alphabeta(game, self.search_depth)
+
+            if self.iterative:
+                pass
 
         except Timeout:
             # Handle any actions required at timeout, if necessary
