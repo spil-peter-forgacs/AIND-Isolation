@@ -44,10 +44,20 @@ def custom_score(game, player):
     if game.is_winner(player):
         return float("inf")
 
-    # TODO: finish this function!
-    own_moves = len(game.get_legal_moves(player))
-    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float(own_moves - opp_moves)
+    if False:
+        # improved_score for testing
+        own_moves = len(game.get_legal_moves(player))
+        opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+        return float(own_moves - opp_moves)
+
+    if True:
+        # Score depends on the distance of center point.
+        row, col = game.get_player_location(player)
+        row_middle = math.floor(game.height / 2)
+        col_middle = math.floor(game.width / 2)
+        row_delta = abs(row - row_middle)
+        col_delta = abs(col - col_middle)
+        return float(row_middle + col_middle / (row_delta + col_delta + 1))
 
 
 class CustomPlayer:
