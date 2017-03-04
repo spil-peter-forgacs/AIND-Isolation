@@ -73,11 +73,19 @@ def custom_score(game, player):
 
         blank = game.get_blank_spaces()
         row, col = game.get_player_location(player)
+        area_size = 2
 
-        # TODO
+        for i in range(-area_size, area_size + 1):
+            for j in range(-area_size, area_size + 1):
+                delta_row = i + row
+                delta_col = j + col
+                if 0 <= delta_row < game.height and \
+                   0 <= delta_col < game.width and \
+                   game.__board_state__[delta_row][delta_col] != game.BLANK:
+                    score -= (1 / (i**2 + j**2 + 1))
 
         return score
-    #score = score + distance_from_others(game, player)
+    score = score + distance_from_others(game, player)
     #score = score - distance_from_others(game, opponent)
 
     # Heuristic III
@@ -91,13 +99,15 @@ def custom_score(game, player):
 
         for i in range(-area_size, area_size + 1):
             for j in range(-area_size, area_size + 1):
-                if 0 <= i + row < game.height and \
-                   0 <= j + col < game.width and \
-                   game.__board_state__[row][col] == game.BLANK:
+                delta_row = i + row
+                delta_col = j + col
+                if 0 <= delta_row < game.height and \
+                   0 <= delta_col < game.width and \
+                   game.__board_state__[delta_row][delta_col] == game.BLANK:
                     score += 1.
 
         return score
-    score = score + available_spaces_around(game, player)
+    #score = score + available_spaces_around(game, player)
     #score = score - available_spaces_around(game, opponent)
 
     return score
