@@ -85,7 +85,7 @@ def custom_score(game, player):
                     score -= (1 / (i**2 + j**2 + 1))
 
         return score
-    score = score + distance_from_others(game, player)
+    #score = score + distance_from_others(game, player)
     #score = score - distance_from_others(game, opponent)
 
     # Heuristic III
@@ -107,8 +107,15 @@ def custom_score(game, player):
                     score += 1.
 
         return score
-    #score = score + available_spaces_around(game, player)
+    score = score + available_spaces_around(game, player)
     #score = score - available_spaces_around(game, opponent)
+
+    # Heuristic IV
+    def away_from_opponent(game, player):
+        row_player, col_player = game.get_player_location(player)
+        row_opponent, col_opponent = game.get_player_location(opponent)
+        return abs(row_player - row_opponent) + abs(col_player - col_opponent)
+    score = score + away_from_opponent(game, player)
 
     return score
 
