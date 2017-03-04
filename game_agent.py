@@ -44,13 +44,18 @@ def custom_score(game, player):
     if game.is_winner(player):
         return float("inf")
 
-    if False:
+    score = 0.
+    opponent = game.get_opponent(player)
+
+    def improved_score(game, player):
         # improved_score for testing
         own_moves = len(game.get_legal_moves(player))
         opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
         return float(own_moves - opp_moves)
+    #score = score + improved_score(game, player)
 
-    if True:
+    # Heuristic I
+    def distance_from_center(game, player):
         # Score depends on the distance of center point.
         row, col = game.get_player_location(player)
         row_middle = math.floor(game.height / 2)
@@ -58,7 +63,44 @@ def custom_score(game, player):
         row_delta = abs(row - row_middle)
         col_delta = abs(col - col_middle)
         return float(row_middle + col_middle / (row_delta + col_delta + 1))
+    #score = score + distance_from_center(game, player)
+    #score = score - distance_from_center(game, opponent)
 
+    # Heuristic II
+    def distance_from_others(game, player):
+        # Distance from other elements
+        score = 0.
+
+        blank = game.get_blank_spaces()
+        row, col = game.get_player_location(player)
+
+        # TODO
+
+        return score
+    #score = score + distance_from_others(game, player)
+    #score = score - distance_from_others(game, opponent)
+
+    # Heuristic III
+    def available_spaces_around(game, player):
+        # Available spaces around the player
+        score = 0.
+
+        blank = game.get_blank_spaces()
+        row, col = game.get_player_location(player)
+        area_size = 2
+
+        for i in range(-area_size, area_size + 1):
+            for j in range(-area_size, area_size + 1):
+                if 0 <= i + row < game.height and \
+                   0 <= j + col < game.width and \
+                   game.__board_state__[row][col] == game.BLANK:
+                    score += 1.
+
+        return score
+    score = score + available_spaces_around(game, player)
+    #score = score - available_spaces_around(game, opponent)
+
+    return score
 
 class CustomPlayer:
     """Game-playing agent that chooses a move using your evaluation function
@@ -153,13 +195,14 @@ class CustomPlayer:
                 # Get neighbour place. There are 8 neighbour spaces.
                 delta = randint(0, 7)
                 if delta <= 2:
-                    row = row - 1
+                    row -= 1
                 elif delta >= 5:
-                    row = row + 1
+                    row += 1
                 if delta == 0 or delta == 3 or delta == 5:
-                    col = col - 1
+                    col -= 1
                 elif delta == 2 or delta == 4 or delta == 7:
-                    col = col + 1
+                    col += 1
+                move = (row, col)
                 # Just to be sure.
                 if game.move_is_legal(move):
                     return move
