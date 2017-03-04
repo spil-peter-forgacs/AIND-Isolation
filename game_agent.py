@@ -7,6 +7,7 @@ You must test your agent's strength against a set of agents with known
 relative strength using tournament.py and include the results in your report.
 """
 import random
+import math
 
 
 class Timeout(Exception):
@@ -129,6 +130,29 @@ class CustomPlayer:
         # Perform any required initializations, including selecting an initial
         # move from the game board (i.e., an opening book), or returning
         # immediately if there are no legal moves
+        
+        # If it is on the beginning of game, occupy the middle point.
+        if game.move_count <= 1:
+
+            row = math.floor(game.height / 2)
+            col = math.floor(game.width / 2)
+            move = (row, col)
+            if game.move_is_legal(move):
+                return move
+            else:
+                # Get neighbour place. There are 8 neighbour spaces.
+                delta = randint(0, 7)
+                if delta <= 2:
+                    row = row - 1
+                elif delta >= 5:
+                    row = row + 1
+                if delta == 0 or delta == 3 or delta == 5:
+                    col = col - 1
+                elif delta == 2 or delta == 4 or delta == 7:
+                    col = col + 1
+                # Just to be sure.
+                if game.move_is_legal(move):
+                    return move
 
         try:
             # The search method call (alpha beta or minimax) should happen in
