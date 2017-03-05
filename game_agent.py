@@ -50,7 +50,7 @@ def custom_score(game, player):
     def improved_score(game, player):
         # improved_score for testing
         own_moves = len(game.get_legal_moves(player))
-        opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+        opp_moves = len(game.get_legal_moves(opponent))
         return float(own_moves - opp_moves)
     #score = score + improved_score(game, player)
 
@@ -107,7 +107,7 @@ def custom_score(game, player):
                     score += 1.
 
         return score
-    score = score + available_spaces_around(game, player)
+    #score = score + available_spaces_around(game, player)
     #score = score - available_spaces_around(game, opponent)
 
     # Heuristic IV
@@ -115,7 +115,29 @@ def custom_score(game, player):
         row_player, col_player = game.get_player_location(player)
         row_opponent, col_opponent = game.get_player_location(opponent)
         return abs(row_player - row_opponent) + abs(col_player - col_opponent)
-    score = score + away_from_opponent(game, player)
+    #score = score + away_from_opponent(game, player)
+
+    # Heuristic V
+    # Checking requisively the available future steps (without making steps with opponent).
+    def future_steps(new_board, player, depth):
+
+        legal_moves = new_board.get_legal_moves(player)
+
+        score = depth * len(legal_moves)
+
+        if depth == 1:
+            return score
+
+        for m in legal_moves:
+            row, col = m
+            new_board.__board_state__[row][col] = new_board.__player_symbols__[player]
+            score += future_steps(new_board, player, depth - 1)
+
+        return score
+    # Copy board, not to change it.
+    new_board = game.copy()
+    depth = 6
+    score = score + future_steps(new_board, player, depth)
 
     return score
 
