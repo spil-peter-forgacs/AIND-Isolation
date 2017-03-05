@@ -48,7 +48,7 @@ def custom_score(game, player):
     opponent = game.get_opponent(player)
 
     def improved_score(game, player):
-        # improved_score for testing
+        # The original improved_score for testing
         own_moves = len(game.get_legal_moves(player))
         opp_moves = len(game.get_legal_moves(opponent))
         return float(own_moves - opp_moves)
@@ -68,7 +68,7 @@ def custom_score(game, player):
 
     # Heuristic II
     def distance_from_others(game, player):
-        # Distance from other elements
+        # Distance from other blocker elements
         score = 0.
 
         blank = game.get_blank_spaces()
@@ -112,6 +112,7 @@ def custom_score(game, player):
 
     # Heuristic IV
     def away_from_opponent(game, player):
+        # Simple heuristic checking the distance from the other player.
         row_player, col_player = game.get_player_location(player)
         row_opponent, col_opponent = game.get_player_location(opponent)
         return abs(row_player - row_opponent) + abs(col_player - col_opponent)
@@ -123,6 +124,7 @@ def custom_score(game, player):
 
         legal_moves = new_board.get_legal_moves(player)
 
+        # Legal moves are weighted by depth. Closer steps are more important.
         score = depth * len(legal_moves)
 
         if depth == 1:
