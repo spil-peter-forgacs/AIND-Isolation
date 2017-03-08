@@ -138,10 +138,10 @@ def custom_score(game, player):
         return score
     # Copy board, not to change it.
     new_board = game.copy()
-    depth = 4
+    depth = 2
     score = score + future_steps(new_board, player, depth)
     new_board = game.copy()
-    depth = 4
+    depth = 2
     score = score - future_steps(new_board, opponent, depth)
 
     return score
