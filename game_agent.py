@@ -177,16 +177,23 @@ class CustomPlayer:
         timer expires.
     """
 
-    def __init__(self, search_depth=3, score_fn=custom_score,
-                 iterative=True, method='minimax', timeout=10.):
-        self.search_depth = search_depth
-        self.iterative = iterative
-        self.score = score_fn
-        self.method = method
+    #def __init__(self, search_depth=3, score_fn=custom_score,
+    #             iterative=True, method='minimax', timeout=10.):
+    def __init__(self, data=None, timeout=1.):
+        #self.search_depth = search_depth
+        #self.iterative = iterative
+        #self.score = score_fn
+        #self.method = method
+
+        self.search_depth = 3
+        self.iterative = True
+        self.score = custom_score
+        self.method = "alphabeta"
+
         self.time_left = None
         self.TIMER_THRESHOLD = timeout
 
-    def get_move(self, game, legal_moves, time_left):
+    def get_move(self, game, time_left):
         """Search for the best move from the available legal moves and return a
         result before the time limit expires.
 
@@ -260,6 +267,8 @@ class CustomPlayer:
             move = (-1, -1)
             max_depth = 10
 
+            player = game.active_player
+            legal_moves = game.get_legal_moves(player)
             if not legal_moves:
                 return move
 
