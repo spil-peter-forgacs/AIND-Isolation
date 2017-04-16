@@ -177,14 +177,7 @@ class CustomPlayer:
         timer expires.
     """
 
-    #def __init__(self, search_depth=3, score_fn=custom_score,
-    #             iterative=True, method='minimax', timeout=10.):
     def __init__(self, data=None, timeout=1.):
-        #self.search_depth = search_depth
-        #self.iterative = iterative
-        #self.score = score_fn
-        #self.method = method
-
         self.search_depth = 3
         self.iterative = True
         self.score = custom_score
