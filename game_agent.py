@@ -132,7 +132,7 @@ def custom_score(game, player):
 
         for m in legal_moves:
             row, col = m
-            new_board.__board_state__[row][col] = new_board.__player_symbols__[player]
+            new_board._board_state[row + col*new_board.height] = player
             score += future_steps(new_board, player, depth - 1)
 
         return score
